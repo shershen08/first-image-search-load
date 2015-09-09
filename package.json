@@ -1,0 +1,18 @@
+{
+  "name": "first-image-search-load",
+  "version": "1.0.0",
+  "description": "Simple module that loads the first image from Google image search on query",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "search",
+    "image"
+  ],
+  "author": "mikhail kuznetcov",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.61.0"
+  }
+}
