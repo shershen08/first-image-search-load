@@ -1,14 +1,14 @@
 {
   "name": "first-image-search-load",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Simple module that loads the first image from Google image search on query",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository" : "https://github.com/shershen08/first-image-search-load",
   "keywords": [
-    "search",
-    "image"
+    "image search"
   ],
   "author": "mikhail kuznetcov",
   "license": "MIT",
