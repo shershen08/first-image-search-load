@@ -1,11 +1,11 @@
-### Description
+## Description
 
 Simple module that loads the first image from Google image search on query
 
 Module usues url : ```https://www.google.nl/search?tbm=isch&q=```
-Request returns A+ promises, thanks to Q module.
+Request returns A+ promises, thanks to Q https://github.com/kriskowal/q module.
 
-### API
+## API
 
 #### saveFirstImage
 Saves the first image to disk as a file
@@ -17,7 +17,7 @@ Returns URL of the first image in the search results
 Returns array of URLs of the images in the search results
 
 
-### dependencies
+## Dependencies
  - cheerio
  - request
  - q
