@@ -1,6 +1,6 @@
+var fs 		= require('fs');
 var _r 		= require('request');
 var cheerio = require('cheerio');
-var fs 		= require('fs');
 var Q 		= require('q');
 
 /* 
@@ -38,53 +38,97 @@ module public methods
 */
 
 /**
-Returns array of images in the search results
+Returns array of URLs of the images in the search results
 */
 exports.getImagesArray = function(query) {
-	checkQuery(query);
-	var deferred = Q.defer();
+	var d = Q.defer();
+
+	try {
+		checkQuery(query);
+	} catch (ex) {
+		d.reject(ex);
+	}
+
 	var searchURL = getFullQueryURL(query);
 	_r(searchURL, function (error, response, body) {
-	  if (!error && response.statusCode == 200) {
+		if (!error && response.statusCode == 200) {
 
-	  	$ = cheerio.load(body);
-	    var allImages = $.parseHTML($.html('img'));
-	    deferred.resolve(extractImageURLS(allImages));
-	  } else {
-	  	deferred.reject(error);
-	  }
+			$ = cheerio.load(body);
+			var allImages = $.parseHTML($.html('img'));
+
+
+			if(allImages){
+				d.resolve(extractImageURLS(allImages));
+			} else {
+				d.reject('No images found for that query');
+			}
+
+		} else {
+			d.reject(error);
+		}
 	})
-	return deferred.promise;
+	return d.promise;
 }
 
 /**
-Saves first image to disk
+Saves the first image to disk as a file
 */
 exports.saveFirstImage = function(query, imageName) {
-	checkQuery(query);
-	checkQuery(imageName);
-	var deferred = Q.defer();
+
+	var d = Q.defer();
+
+	try {	
+		checkQuery(query);
+		checkQuery(imageName);
+	} catch (ex) {
+		return ex;
+	}
+
 	var searchURL = getFullQueryURL(query);
 	var imgName = imageName + imgFileType;
-	_r(searchURL).pipe(fs.createWriteStream(imgName));
+
+	var writePipe = _r(searchURL).pipe(fs.createWriteStream(imgName));
+	writePipe.on('finish', function (data) { 
+		d.resolve(data);
+	});
+	writePipe.on('error', function (error) { 
+		d.reject(error);
+	});
+
+	return d.promise;
 }
 
 /**
-Returns first image in the search results
+Returns URL of the first image in the search results
 */
 exports.getFirstImageURL = function(query) {
- 	checkQuery(query);
- 	var deferred = Q.defer();
+	var d = Q.defer();
+
+	try {
+		checkQuery(query);
+	} catch (ex) {
+		d.reject(ex);
+	}
+
 	var searchURL = getFullQueryURL(query);
 	_r(searchURL, function (error, response, body) {
-	  if (!error && response.statusCode == 200) {
+		if (!error && response.statusCode == 200) {
 
-	  	$ = cheerio.load(body);
-	  	var allImages = $.parseHTML($.html('img'));
-	    deferred.resolve(allImages[0].attribs.src);
-	  } else {
-	  	deferred.reject(error);
-	  }
+
+			$ = cheerio.load(body);
+			var allImages = $.parseHTML($.html('img'));
+
+			if(allImages){
+				d.resolve(allImages[0].attribs.src);
+			} else {
+				d.reject('No images found for that query');
+			}
+			
+
+			d.resolve(allImages[0].attribs.src);
+		} else {
+			d.reject(error);
+		}
 	});
-	return deferred.promise;
+	return d.promise;
 }
